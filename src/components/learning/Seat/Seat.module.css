@@ -1,0 +1,53 @@
+.rowSeat {
+  flex-wrap: nowrap;
+  margin-bottom: 10px;
+}
+
+.colSeat {
+  padding: 0 5px;
+}
+
+.seat {
+  width: 20px;
+  height: 20px;
+  border-radius: 25%;
+  cursor: pointer;
+}
+
+.seat:hover {
+  width: 25px;
+  height: 25px;
+}
+
+.seatAvailable {
+  background-color: #d6d8e7;
+}
+
+.seatSelected {
+  background-color: #5f2eea;
+}
+
+.seatSold {
+  background-color: #6e7191;
+}
+
+@media (max-width: 575.98px) {
+  .rowSeat {
+    margin-bottom: 5px;
+  }
+
+  .seatAlpabeth {
+    font-size: 8px;
+  }
+
+  .seat {
+    width: 10px;
+    height: 10px;
+    border-radius: 15%;
+  }
+
+  .seat:hover {
+    width: 15px;
+    height: 15px;
+  }
+}
