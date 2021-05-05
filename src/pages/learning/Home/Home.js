@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import axiosApiIntances from "../../../utils/axios";
+// import axiosApiIntances from "../../../utils/axios";
 import styles from "./Home.module.css";
 import NavBar from "../../../components/learning/NavBar";
 import Cards from "../../../components/learning/Card";
 import ReactPaginate from "react-paginate";
 import { Container, Form, Button, Row, Col, Spinner } from "react-bootstrap";
+import { connect } from "react-redux";
+import { getAllMovie } from "../../../redux/actions/movie";
 
 class Home extends Component {
   constructor(props) {
@@ -14,12 +16,13 @@ class Home extends Component {
         movieName: "",
         movieCategory: "",
         movieReleaseDate: "",
+        movieImage: null,
       },
-      data: [],
-      pagination: {},
+      // data: [],
+      // pagination: {},
       page: 1,
       limit: 3,
-      isLoading: false,
+      // isLoading: false,
       isUpdate: false,
       id: "",
     };
@@ -33,21 +36,22 @@ class Home extends Component {
   getData = () => {
     console.log("Get Data !");
     const { page, limit } = this.state;
-    this.setState({ isLoading: true });
-    axiosApiIntances
-      .get(`movie?page=${page}&limit=${limit}`)
-      .then((res) => {
-        // console.log(res);
-        this.setState({ data: res.data.data, pagination: res.data.pagination });
-      })
-      .catch((err) => {
-        console.log(err.response);
-      })
-      .finally(() => {
-        setTimeout(() => {
-          this.setState({ isLoading: false });
-        }, 1000);
-      });
+    this.props.getAllMovie(page, limit);
+    // this.setState({ isLoading: true });
+    // axiosApiIntances
+    //   .get(`movie?page=${page}&limit=${limit}`)
+    //   .then((res) => {
+    //     // console.log(res);
+    //     this.setState({ data: res.data.data, pagination: res.data.pagination });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.response);
+    //   })
+    //   .finally(() => {
+    //     setTimeout(() => {
+    //       this.setState({ isLoading: false });
+    //     }, 1000);
+    //   });
   };
 
   changeText = (event) => {
@@ -70,13 +74,31 @@ class Home extends Component {
     });
   };
 
+  handleImage = (event) => {
+    this.setState({
+      form: {
+        ...this.state.form,
+        movieImage: event.target.files[0],
+      },
+    });
+  };
+
   submitData = (event) => {
     event.preventDefault();
     console.log("Save Data !");
-    console.log(this.state.form);
+    // console.log(this.state.form); // digunakan untuk create data yang hanya berisikan data selain file
+    const formData = new FormData(); // FORM DATA digunakan untuk menghandle inputan yang memiliki file upload didalamnya
+    formData.append("movieName", this.state.form.movieName);
+    formData.append("movieCategory", this.state.form.movieCategory);
+    formData.append("movieReleaseDate", this.state.form.movieReleaseDate);
+    formData.append("movieImage", this.state.form.movieImage);
+    // for (var pair of formData.entries()) {
+    //   console.log(pair[0] + ", " + pair[1]);
+    // }
+
     // const { form } = this.state;
     // proses request post movie
-    // axiosApiIntances.post(`movie`, form).then(
+    // axiosApiIntances.post(`movie`, formData).then( // UBAH MENJADI FORM DATA KARENA PROSES INPUTNYA MEMILIK UPLOAD FILE
     // this.getData()
     // this.resetData()
     // ).catch()
@@ -128,9 +150,10 @@ class Home extends Component {
   };
 
   render() {
-    console.log(this.state);
-    const { totalPage } = this.state.pagination;
-    const { isLoading, isUpdate } = this.state;
+    // console.log(this.state);
+    const { totalPage } = this.props.movie.pagination;
+    const { isLoading } = this.props.movie;
+    const { isUpdate } = this.state;
     return (
       <>
         <Container className={styles.containerCenter}>
@@ -174,6 +197,15 @@ class Home extends Component {
                   onChange={(event) => this.changeText(event)}
                 />
               </Form.Group>
+              {/* ============ */}
+              <Form.Group>
+                <Form.Label>Movie Image</Form.Label>
+                <Form.Control
+                  type="file"
+                  onChange={(event) => this.handleImage(event)}
+                />
+              </Form.Group>
+              {/* ============ */}
               <Button variant="primary" type="reset">
                 Reset
               </Button>
@@ -189,7 +221,7 @@ class Home extends Component {
                 <Spinner animation="border" variant="primary" />
               </Col>
             ) : (
-              this.state.data.map((item, index) => {
+              this.props.movie.dataMovie.map((item, index) => {
                 return (
                   <Col md={4} key={index}>
                     <Cards
@@ -221,4 +253,11 @@ class Home extends Component {
   }
 }
 
-export default Home;
+const mapStateToProps = (state) => ({
+  movie: state.movie,
+  auth: state.auth,
+});
+
+const mapDispatchToProps = { getAllMovie };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

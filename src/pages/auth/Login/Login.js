@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 // import styles from "./Login.module.css";
-import { Button, Container, Form, Card } from "react-bootstrap";
+import { Button, Container, Form, Card, Alert } from "react-bootstrap";
 import { connect } from "react-redux";
 import { login } from "../../../redux/actions/auth";
 
@@ -43,6 +43,9 @@ class Login extends Component {
       <>
         <Container>
           <Card className="mt-5 mx-auto" style={{ width: "30rem" }}>
+            {this.props.auth.isError && (
+              <Alert variant="danger">{this.props.auth.msg}</Alert>
+            )}
             <Card.Body>
               <Form onSubmit={this.handleLogin}>
                 <Form.Group controlId="formBasicEmail">
