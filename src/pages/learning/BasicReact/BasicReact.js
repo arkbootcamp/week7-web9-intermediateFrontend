@@ -2,8 +2,10 @@ import React, { Component } from "react";
 // import "./BasicReact.css";
 import styles from "./BasicReact.module.css";
 import { Link } from "react-router-dom";
-import { Button, Container, Modal } from "react-bootstrap";
+import { Button, Container, Modal, Toast } from "react-bootstrap";
 import NavBar from "../../../components/learning/NavBar";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
+const data = [{ name: "Januari", uv: 400 }];
 
 class BasicReact extends Component {
   constructor(props) {
@@ -24,6 +26,7 @@ class BasicReact extends Component {
       ],
       isShowModal: false,
     };
+    this.inputOpenFileRef = React.createRef();
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -74,14 +77,18 @@ class BasicReact extends Component {
     this.setState({ isShowModal: false });
   };
 
+  showOpenFileDlg = () => {
+    this.inputOpenFileRef.current.click();
+  };
+
   render() {
     console.log(this.state);
     const { name, search, isShowModal } = this.state;
     return (
       <>
         <Container className={styles.containerCenter}>
-          <h1>Basic React</h1>
-          <NavBar />
+          <h1 className="d-none d-lg-block">Basic React</h1>
+          <NavBar {...this.props} />
           <h1>Hello {name} !</h1>
           <hr />
           <h3>Events</h3>
@@ -145,6 +152,38 @@ class BasicReact extends Component {
               </Button>
             </Modal.Footer>
           </Modal>
+          <hr />
+          <h3>Handling Image</h3>
+          <input
+            ref={this.inputOpenFileRef}
+            type="file"
+            style={{ display: "none" }}
+          />
+          <h1 onClick={this.showOpenFileDlg}>Open</h1>
+          {/* ======================= */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+            }}
+          >
+            <Toast>
+              <Toast.Header>
+                <strong className="mr-auto">Bootstrap</strong>
+                <small>just now</small>
+              </Toast.Header>
+              <Toast.Body>See? Just like this.</Toast.Body>
+            </Toast>
+          </div>
+          <hr />
+          <h3>Chart</h3>
+          <LineChart width={600} height={300} data={data}>
+            <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+            <CartesianGrid stroke="#ccc" />
+            <XAxis dataKey="name" />
+            <YAxis />
+          </LineChart>
         </Container>
       </>
     );
