@@ -33,6 +33,7 @@ class Login extends Component {
       // [2]
       console.log(this.props.auth.data.token);
       localStorage.setItem("token", this.props.auth.data.token);
+      localStorage.setItem("refreshToken", this.props.auth.data.refreshToken);
       this.props.history.push("/learning/basic-home");
     });
   };

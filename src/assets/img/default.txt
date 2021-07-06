@@ -1,0 +1,12 @@
+map(item, index) ....
+if (item.image) {
+  <img src=`localhost:3000/api/${item.image}` />
+} else {
+  <img src='../img/default.txt' />
+}
+
+if (item.image) {
+  <img src=`localhost:3000/api/${item.image}` />
+} else {
+  <img src=`localhost:3000/api/default.png` />
+}
