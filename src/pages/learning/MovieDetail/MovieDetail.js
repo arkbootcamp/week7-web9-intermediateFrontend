@@ -4,6 +4,9 @@ import NavBar from "../../../components/learning/NavBar";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import Seat from "../../../components/learning/Seat/Seat";
 // import qs from "query-string";
+import { connect } from "react-redux";
+
+import { saveOrder } from "../../../redux/actions/order";
 
 class MovieDetail extends Component {
   constructor() {
@@ -21,7 +24,7 @@ class MovieDetail extends Component {
     // [2]
     // console.log(this.props.location.state);
     // [3]
-    console.log(this.props.match.params);
+    // console.log(this.props.match.params);
     // untuk page movie detail ---------------------------
     // proses get data movie by id
     // proses get data premiere/bioskop by id
@@ -29,17 +32,31 @@ class MovieDetail extends Component {
   }
 
   bookingSeat = (seat) => {
-    this.setState({
-      selectedSeat: [...this.state.selectedSeat, seat],
-    });
-
-    console.log(seat);
+    if (this.state.selectedSeat.includes(seat)) {
+      const deleteSeat = this.state.selectedSeat.filter((el) => {
+        return el !== seat;
+      });
+      this.setState({
+        selectedSeat: deleteSeat,
+      });
+    } else {
+      this.setState({
+        selectedSeat: [...this.state.selectedSeat, seat],
+      });
+    }
+    // console.log(seat);
   };
 
   booking = () => {
-    console.log("booking");
-    const booking = JSON.stringify(this.state.selectedSeat);
-    localStorage.setItem("bookingSeat", booking);
+    // console.log("booking", this.state.selectedSeat);
+    const setData = {
+      movieId: this.props.match.params.id,
+      orders: this.state.selectedSeat,
+    };
+    // console.log(setData);
+    this.props.saveOrder(setData);
+    // const booking = JSON.stringify(this.state.selectedSeat);
+    // localStorage.setItem("bookingSeat", booking);
   };
 
   render() {
@@ -123,4 +140,10 @@ class MovieDetail extends Component {
   }
 }
 
-export default MovieDetail;
+const mapStateToProps = (state) => ({
+  order: state.order,
+});
+
+const mapDispatchToProps = { saveOrder };
+
+export default connect(mapStateToProps, mapDispatchToProps)(MovieDetail);

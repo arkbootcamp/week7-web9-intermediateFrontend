@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { Button, Card } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 
+import { connect } from "react-redux";
+
+import { addCart } from "../../redux/actions/order";
+
 class Cards extends Component {
   handleMovieDetail = (id) => {
     // [1] = bisa digunakan untuk handling pagination,sort,search
@@ -14,12 +18,8 @@ class Cards extends Component {
 
   render() {
     // console.log(this.props);
-    const {
-      movie_id,
-      movie_name,
-      movie_category,
-      movie_release_date,
-    } = this.props.data;
+    const { movie_id, movie_name, movie_category, movie_release_date } =
+      this.props.data;
     const { handleUpdate, handleDelete, data } = this.props;
     return (
       <>
@@ -44,6 +44,16 @@ class Cards extends Component {
             <Button variant="danger" onClick={() => handleDelete(movie_id)}>
               Delete
             </Button>
+            <div className="d-grid gap-2 mt-2">
+              <Button
+                variant="primary"
+                onClick={() =>
+                  this.props.addCart({ movieId: movie_id, qty: 1 })
+                }
+              >
+                Add To Cart
+              </Button>
+            </div>
           </Card.Body>
         </Card>
       </>
@@ -51,4 +61,10 @@ class Cards extends Component {
   }
 }
 
-export default withRouter(Cards);
+const mapStateToProps = (state) => ({
+  order: state.order,
+});
+
+const mapDispatchToProps = { addCart };
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Cards));

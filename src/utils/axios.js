@@ -41,7 +41,10 @@ axiosApiIntances.interceptors.response.use(
             localStorage.setItem("token", res.data.data.token);
             window.location.reload();
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            alert("Please Login !");
+            localStorage.clear();
+          });
       } else {
         alert("Please Login !");
         localStorage.clear();
